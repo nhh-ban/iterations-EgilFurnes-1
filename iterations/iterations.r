@@ -62,46 +62,8 @@ stations_metadata_df %>%
   transform_volumes() %>% 
   ggplot(aes(x=from, y=volume)) + 
   geom_line() + 
-  theme_classic() 
+  theme_classic()
 
-
-# Task 6 ------------------------------------------------------------------
-
-stations_metadata_df %>% 
-  filter(latestData > Sys.Date() - days(7)) %>% 
-  sample_n(1) -> selected_station 
-
-selected_station %$% 
-  vol_qry(
-    id = id,
-    from = to_iso8601(latestData, -4),
-    to = to_iso8601(latestData, 0)
-  ) %>% 
-  GQL(., .url = configs$vegvesen_url) %>%
-  transform_volumes() %>%
-  mutate(from = lubridate::as_datetime(from)) %>% 
-  ggplot(aes(x=from, y=volume)) + 
-  geom_line(col = "#DB444B") + 
-  labs(
-    title = sprintf("Station: %s", selected_station$name),
-    y = "Traffic volume",
-    x = "Date"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0, face = "bold", size = 14),
-    plot.subtitle = element_text(hjust = 0, size = 12),
-    panel.grid.major.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_blank(),
-    axis.line.x = element_line(color = "black"),
-    axis.line.y = element_line(color = "black"),
-    plot.margin = margin(1, 1, 1, 1, "cm"),
-    legend.position = "top",
-    legend.title = element_blank(),
-    legend.text = element_text(size = 8)
-  ) 
 
 
 
